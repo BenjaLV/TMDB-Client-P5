@@ -18,6 +18,7 @@ function MoviePage() {
   const movies = useSelector((state) => state.netflix.movies);
   const genres = useSelector((state) => state.netflix.genres);
   const genresLoaded = useSelector((state) => state.netflix.genresLoaded);
+  const token = useSelector((state) => state.auth.token);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -32,17 +33,13 @@ function MoviePage() {
     }
   }, [genresLoaded]);
 
-  
-
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const id = { token };
 
     axios
-      .post(`${API}/profile`, {id: user})
+      .post(`${API}/profile`, { id })
       .then((response) => {
-        console.log('estoy en axios');
         dispatch(setToken(response.data));
-        console.log(response.data);
       })
       .catch((error) => {
         navigate("/login");
@@ -54,7 +51,6 @@ function MoviePage() {
     return () => (window.onscroll = null);
   };
 
-  
   return (
     <Container>
       <div className="navbar">

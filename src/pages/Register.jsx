@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import BackgroundImage from "../components/BackgroundImage";
 import Header from "../components/Header";
-import { registerRequest } from "../api/auth";
+import { registerRequest } from "../service/auth";
 // import {useForm} from 'react-hook-form'
 
 function Register() {

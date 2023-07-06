@@ -5,18 +5,21 @@ import background from "../assets/login.jpg";
 import { useNavigate } from "react-router-dom";
 import BackgroundImage from "../components/BackgroundImage";
 import Header from "../components/Header";
-import { loginRequest } from "../api/auth";
+import { loginRequest } from "../service/auth";
+import { useDispatch } from "react-redux";
+import { setToken } from "../store";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {
       const res = await loginRequest({ email, password });
-      localStorage.setItem("user", res.id);
-      console.log(res);
+      localStorage.setItem("user", JSON.stringify(res));
+      dispatch(setToken(res))
       navigate("/");
     } catch (error) {
       console.log(error);
