@@ -33,18 +33,6 @@ function MoviePage() {
     }
   }, [genresLoaded]);
 
-  useEffect(() => {
-    const id = { token };
-
-    axios
-      .post(`${API}/profile`, { id })
-      .then((response) => {
-        dispatch(setToken(response.data));
-      })
-      .catch((error) => {
-        navigate("/login");
-      });
-  }, []);
 
   window.onscroll = () => {
     setIsScrolled(window.pageYOffset === 0 ? false : true);
