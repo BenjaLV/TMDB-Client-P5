@@ -6,39 +6,26 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { RiThumbUpFill, RiThumbDownFill } from "react-icons/ri";
 import { BiChevronDown } from "react-icons/bi";
 import { BsCheck } from "react-icons/bs";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { API } from "../api/api";
+import { addMovieToLiked, removeMovieFromLiked } from "../store";
 
-
-export default React.memo(function Card({ movieData, isLiked = false, removeFromLiked, addToLiked, removeCallBack }) {
+export default React.memo(function Card({
+  movieData,
+  isLiked = false,
+  removeCallBack,
+}) {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
 
   const addToList = async () => {
-    try {
-      await axios.post(`http://localhost:5001/api/user/add`, {
-        email: token.email,
-        data: movieData,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(addMovieToLiked({ email: token.email, data: movieData }));
   };
 
   const removeFromList = async () => {
-    try {
-      await axios.post(`${API}/user/remove`, {
-        email: token.email,
-        movieId: movieData.id,
-      });
-      if (removeCallBack) {
-        removeCallBack()
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
+    dispatch(removeMovieFromLiked({ email: token.email, movieId: movieData.id }));
   };
 
   return (
@@ -60,13 +47,6 @@ export default React.memo(function Card({ movieData, isLiked = false, removeFrom
               alt="card"
               onClick={() => navigate("/player")}
             />
-            {/* <video
-            //   src={video}
-              autoPlay={true}
-              loop
-              muted
-              onClick={() => navigate("/player")}
-            /> */}
           </div>
           <div className="info-container flex column">
             <h3 className="name" onClick={() => navigate("/player")}>
@@ -81,10 +61,7 @@ export default React.memo(function Card({ movieData, isLiked = false, removeFrom
                 <RiThumbUpFill title="Like" />
                 <RiThumbDownFill title="Dislike" />
                 {isLiked ? (
-                  <BsCheck
-                    title="Remove from List"
-                    onClick={removeFromList}
-                  />
+                  <BsCheck title="Remove from List" onClick={removeFromList} />
                 ) : (
                   <AiOutlinePlus title="Add to my list" onClick={addToList} />
                 )}

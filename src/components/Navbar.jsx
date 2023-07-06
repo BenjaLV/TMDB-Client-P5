@@ -6,6 +6,8 @@ import logo from "../assets/logo.png";
 import { FaPowerOff, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API_KEY } from "../utils/constanst";
+import { useDispatch } from "react-redux";
+import { setToken } from "../store";
 const API = "http://localhost:5001/api";
 
 export default function Navbar({ isScrolled }) {
@@ -13,6 +15,7 @@ export default function Navbar({ isScrolled }) {
   const [inputValue, setInputValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [inputHover, setInputHover] = useState(false);
+  const dispatch = useDispatch();
   const links = [
     { name: "Home", link: "/" },
     { name: "TV Shows", link: "/tv" },
@@ -24,6 +27,8 @@ export default function Navbar({ isScrolled }) {
   const handleLogout = async () => {
     try {
       await axios.post(`${API}/logout`);
+      dispatch(setToken(null));
+      localStorage.removeItem('user');
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -103,7 +108,6 @@ export default function Navbar({ isScrolled }) {
     </Container>
   );
 }
-
 
 const Container = styled.div`
   .scrolled {

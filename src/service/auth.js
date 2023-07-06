@@ -1,10 +1,8 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5001/api";
+import { API } from "../api/api";
 
 export const registerRequest = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, {
+    const response = await API.post("/register", {
       email,
       password,
     });
@@ -16,7 +14,7 @@ export const registerRequest = async (email, password) => {
 
 export const loginRequest = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, userData);
+    const response = await API.post("/login", userData);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);

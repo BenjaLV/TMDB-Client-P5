@@ -10,6 +10,7 @@ const initialState = {
   movies: [],
   genresLoaded: false,
   genres: [],
+  likedMovies: [],
 };
 
 export const getGenres = createAsyncThunk("netflix/genres", async () => {
@@ -86,6 +87,17 @@ export const getUsersLikedMovies = createAsyncThunk(
   }
 );
 
+export const addMovieToLiked = createAsyncThunk(
+  "netflix/addLiked",
+  async ({ data, email }) => {
+    await axios.post("http://localhost:5001/api/user/add", {
+      email,
+      data,
+    });
+    return data;
+  }
+);
+
 export const removeMovieFromLiked = createAsyncThunk(
   "netflix/deleteLiked",
   async ({ movieId, email }) => {
@@ -114,15 +126,17 @@ const NetflixSlice = createSlice({
       state.movies = action.payload;
     });
     builder.addCase(getUsersLikedMovies.fulfilled, (state, action) => {
-      state.movies = action.payload;
+      state.likedMovies = action.payload;
+    });
+    builder.addCase(addMovieToLiked.fulfilled, (state, action) => {
+      console.log({likedMovies: [...state.likedMovies], data: action.payload})
+      state.likedMovies.push(action.payload)
     });
     builder.addCase(removeMovieFromLiked.fulfilled, (state, action) => {
-      state.movies = action.payload;
+      state.likedMovies = action.payload;
     });
   },
 });
-
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -138,14 +152,11 @@ const authSlice = createSlice({
 
 export const { setToken } = authSlice.actions;
 
-
 export const store = configureStore({
   reducer: {
     netflix: NetflixSlice.reducer,
     auth: authSlice.reducer,
   },
 });
-
-
 
 export const { setGenres, setMovies } = NetflixSlice.actions;
